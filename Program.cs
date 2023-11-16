@@ -4,10 +4,13 @@ using System.Runtime.InteropServices;
 class Program
 {
     [DllImport("libmathlib.so")]
-    public static extern int add(int a, int b);
-
-    [DllImport("libmathlib.so")]
-    public static extern IntPtr subtract(IntPtr a);
+    public static extern IntPtr resample(
+        IntPtr source_audio_buffer,       //Input array
+        int input_frames,  //Input frames
+        int output_frames,
+        double ratio, 
+        uint node_id
+    );
 
 
     
@@ -15,6 +18,7 @@ class Program
 
     static void Main()
     {
+/*
         for(int i = 0;i < 10; i++)
         {
 
@@ -62,22 +66,27 @@ class Program
 
 
 
-            // Now you can use 'unmanagedPtr' for interoperability with native code
-            // ...
-
-            // For demonstration, let's print the content in unmanaged memory
-            /*for (int i = 0; i < byteArray.Length; i++)
-            {
-                byte value = Marshal.ReadByte(unmanagedPtr, i);
-                Console.WriteLine($"Byte at index {i}: 0x{value:X}");
-            }*/
         }
         finally
         {
             // Free the allocated unmanaged memory
             Marshal.FreeHGlobal(unmanagedPtr);
         }
+    }
+    */
 
-}
+
+        byte[] audioData = new byte[440*32];
+        IntPtr unmanagedPtrAudio = Marshal.AllocHGlobal(audioData.Length);
+        Marshal.Copy(audioData, 0, unmanagedPtrAudio, audioData.Length);
+
+        IntPtr resampledAudioPtr = resample(
+            unmanagedPtrAudio,       //Input array
+            16*440,  //Input frames
+            8*440, //Output frames
+            0.5, //ratio 
+            123456 //node_id
+        );
+
     }
 }
